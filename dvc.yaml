@@ -1,0 +1,17 @@
+stages:
+  train:
+    cmd: python train.py
+    deps:
+      - train.py
+      - data
+    params:
+      - train.epochs
+      - train.learning_rate
+      - train.batch_size
+    outs:
+      - artifacts/model.pth
+      - artifacts/labels.json
+    metrics:
+      - mlflow.db:
+          cache: false
+

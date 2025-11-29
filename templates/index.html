@@ -246,11 +246,11 @@
 </head>
 <body>
     <div class="container">
-        <h1>🏢 Building Classifier</h1>
+        <h1>Building Classifier</h1>
         <p class="subtitle">Powered by MLflow & PyTorch</p>
 
         <div class="upload-area" id="uploadArea">
-            <div class="upload-icon">📸</div>
+            <div class="upload-icon">[IMG]</div>
             <div class="upload-text">Click or drag image here</div>
             <div class="upload-subtext">Supports: JPG, PNG, GIF, BMP, WebP</div>
             <input type="file" id="fileInput" accept="image/*">
@@ -258,8 +258,8 @@
 
         <div class="preview-container" id="previewContainer">
             <img id="previewImage" class="preview-image" src="" alt="Preview">
-            <button class="btn-predict" id="predictBtn">🔮 Predict Building Type</button>
-            <button class="btn-reset" id="resetBtn">🔄 Upload Another Image</button>
+            <button class="btn-predict" id="predictBtn">Predict Building Type</button>
+            <button class="btn-reset" id="resetBtn">Upload Another Image</button>
         </div>
 
         <div class="loading" id="loading">
@@ -268,7 +268,7 @@
         </div>
 
         <div class="results-container" id="resultsContainer">
-            <h2 class="results-title">🎯 Prediction Results</h2>
+            <h2 class="results-title">Prediction Results</h2>
             <div id="predictionsList"></div>
         </div>
 
@@ -398,7 +398,7 @@
         }
 
         function showError(message) {
-            errorMessage.textContent = '❌ ' + message;
+            errorMessage.textContent = 'ERROR: ' + message;
             errorMessage.style.display = 'block';
         }
     </script>

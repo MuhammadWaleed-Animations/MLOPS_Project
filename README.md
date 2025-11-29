@@ -104,7 +104,7 @@ Then open `http://localhost:5000` to view:
 - **Epochs**: 5
 - **Input Size**: 224x224 RGB images
 
-## 🔧 API Endpoints
+## API Endpoints
 
 ### `GET /`
 Serves the web UI

@@ -1,0 +1,7 @@
+train:
+  epochs: 15
+  learning_rate: 0.001
+  learning_rate_finetune: 0.0001
+  batch_size: 16
+  model_architecture: resnet18_finetuned
+

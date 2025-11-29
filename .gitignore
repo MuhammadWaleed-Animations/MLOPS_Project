@@ -43,6 +43,8 @@ uploads/
 temp.jpg
 *.tmp
 *.temp
+*.md
+!README.md
 
 # IDE
 .vscode/
