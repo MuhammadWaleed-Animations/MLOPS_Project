@@ -106,6 +106,9 @@ share/python-wheels/
 *.sqlite
 *.sqlite3
 
+# Except DVC-tracked MLflow database
+mlflow.db
+
 # Compiled files
 *.pyc
 *.pyo

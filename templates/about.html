@@ -1,0 +1,304 @@
+{% extends "base.html" %}
+
+{% block title %}About - Building Classifier{% endblock %}
+
+{% block extra_css %}
+<style>
+    .about-section {
+        margin-bottom: 3rem;
+    }
+
+    .about-section h2 {
+        color: #667eea;
+        margin-bottom: 1rem;
+        font-size: 1.8rem;
+    }
+
+    .about-section p {
+        color: #666;
+        line-height: 1.8;
+        margin-bottom: 1rem;
+    }
+
+    .tech-stack {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .tech-item {
+        background: #f8f9ff;
+        padding: 1.5rem;
+        border-radius: 10px;
+        text-align: center;
+        border: 2px solid #e0e0e0;
+        transition: all 0.3s;
+    }
+
+    .tech-item:hover {
+        border-color: #667eea;
+        transform: translateY(-5px);
+    }
+
+    .tech-name {
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 0.5rem;
+        font-size: 1.1rem;
+    }
+
+    .tech-desc {
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    .model-info {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 15px;
+        margin: 2rem 0;
+    }
+
+    .model-info h3 {
+        margin-bottom: 1rem;
+    }
+
+    .model-specs {
+        list-style: none;
+        padding: 0;
+    }
+
+    .model-specs li {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .model-specs li:last-child {
+        border-bottom: none;
+    }
+
+    .classes-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .class-card {
+        background: #667eea;
+        color: white;
+        padding: 1rem;
+        border-radius: 10px;
+        text-align: center;
+        font-weight: 600;
+    }
+
+    code {
+        background: #f0f0f0;
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        font-family: 'Courier New', monospace;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 968px) {
+        .tech-stack {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .classes-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .about-section h2 {
+            font-size: 1.6rem;
+        }
+
+        .model-info {
+            padding: 1.5rem;
+        }
+
+        .tech-item {
+            padding: 1.2rem;
+        }
+
+        .tech-name {
+            font-size: 1rem;
+        }
+
+        .tech-desc {
+            font-size: 0.85rem;
+        }
+    }
+
+    @media (max-width: 580px) {
+        .tech-stack {
+            grid-template-columns: 1fr;
+        }
+
+        .classes-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .about-section h2 {
+            font-size: 1.4rem;
+        }
+
+        .about-section p,
+        .about-section ul {
+            font-size: 0.95rem;
+        }
+
+        .model-specs li {
+            font-size: 0.9rem;
+        }
+
+        code {
+            font-size: 0.85rem;
+        }
+    }
+
+    @media (max-width: 380px) {
+        .classes-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>About Building Classifier</h1>
+
+    <div class="about-section">
+        <h2>Overview</h2>
+        <p>
+            Building Classifier is an advanced AI-powered web application that uses deep learning to 
+            automatically identify different types of buildings from images. The system leverages 
+            transfer learning with a ResNet18 architecture, pretrained on ImageNet and fine-tuned 
+            on our custom building dataset.
+        </p>
+        <p>
+            The project demonstrates modern MLOps practices including experiment tracking with MLflow, 
+            data versioning with DVC, and containerized deployment with Docker.
+        </p>
+    </div>
+
+    <div class="model-info">
+        <h3>Model Architecture</h3>
+        <ul class="model-specs">
+            <li><strong>Base Model:</strong> ResNet18 (ImageNet pretrained)</li>
+            <li><strong>Training Strategy:</strong> Transfer Learning with Layer4 fine-tuning</li>
+            <li><strong>Input Size:</strong> 224x224 RGB images</li>
+            <li><strong>Training Epochs:</strong> 15</li>
+            <li><strong>Optimizer:</strong> Adam (dual learning rates)</li>
+            <li><strong>Loss Function:</strong> CrossEntropyLoss</li>
+            <li><strong>Data Augmentation:</strong> RandomCrop, HorizontalFlip, Rotation, ColorJitter</li>
+            <li><strong>Accuracy:</strong> 98%+</li>
+        </ul>
+    </div>
+
+    <div class="about-section">
+        <h2>Building Classes</h2>
+        <p>The model can identify 5 different types of buildings:</p>
+        <div class="classes-grid">
+            <div class="class-card">Cafe</div>
+            <div class="class-card">Electrical</div>
+            <div class="class-card">Ground</div>
+            <div class="class-card">Library</div>
+            <div class="class-card">New Building</div>
+        </div>
+    </div>
+
+    <div class="about-section">
+        <h2>Technology Stack</h2>
+        <div class="tech-stack">
+            <div class="tech-item">
+                <div class="tech-name">PyTorch</div>
+                <div class="tech-desc">Deep learning framework</div>
+            </div>
+            <div class="tech-item">
+                <div class="tech-name">Flask</div>
+                <div class="tech-desc">Web application framework</div>
+            </div>
+            <div class="tech-item">
+                <div class="tech-name">MLflow</div>
+                <div class="tech-desc">Experiment tracking</div>
+            </div>
+            <div class="tech-item">
+                <div class="tech-name">DVC</div>
+                <div class="tech-desc">Data version control</div>
+            </div>
+            <div class="tech-item">
+                <div class="tech-name">SQLite</div>
+                <div class="tech-desc">Database storage</div>
+            </div>
+            <div class="tech-item">
+                <div class="tech-name">Docker</div>
+                <div class="tech-desc">Containerization</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="about-section">
+        <h2>Features</h2>
+        <ul style="color: #666; line-height: 2;">
+            <li>Real-time image classification with confidence scores</li>
+            <li>Top-3 predictions for each image</li>
+            <li>Prediction history tracking</li>
+            <li>MLflow experiment tracking and metrics</li>
+            <li>Data versioning with DVC</li>
+            <li>RESTful API endpoints</li>
+            <li>Responsive web interface</li>
+            <li>Docker deployment ready</li>
+        </ul>
+    </div>
+
+    <div class="about-section">
+        <h2>API Endpoints</h2>
+        <ul style="color: #666; line-height: 2;">
+            <li><code>GET /</code> - Home page</li>
+            <li><code>GET /classify</code> - Image classification interface</li>
+            <li><code>POST /predict</code> - Prediction API (accepts multipart/form-data)</li>
+            <li><code>GET /history</code> - View prediction history</li>
+            <li><code>GET /metrics</code> - View MLflow metrics</li>
+            <li><code>GET /health</code> - Health check endpoint</li>
+        </ul>
+    </div>
+
+    <div class="about-section">
+        <h2>Getting Started</h2>
+        <p><strong>1. Install Dependencies:</strong></p>
+        <p><code>pip install -r requirements.txt</code></p>
+        
+        <p style="margin-top: 1rem;"><strong>2. Train the Model:</strong></p>
+        <p><code>python train.py</code></p>
+        
+        <p style="margin-top: 1rem;"><strong>3. Run the Application:</strong></p>
+        <p><code>python app.py</code></p>
+        
+        <p style="margin-top: 1rem;"><strong>4. Access the Web Interface:</strong></p>
+        <p><code>http://localhost:8000</code></p>
+    </div>
+
+    <div class="about-section">
+        <h2>Project Structure</h2>
+        <p>This project follows MLOps best practices with proper separation of concerns:</p>
+        <ul style="color: #666; line-height: 2; font-family: 'Courier New', monospace; font-size: 0.9rem;">
+            <li>train.py - Model training with MLflow logging</li>
+            <li>model_loader.py - Model loading and inference</li>
+            <li>app.py - Flask web application</li>
+            <li>templates/ - HTML templates</li>
+            <li>data/ - Training dataset (DVC tracked)</li>
+            <li>artifacts/ - Model files (DVC tracked)</li>
+            <li>mlflow.db - Experiment tracking database</li>
+            <li>predictions.db - Predictions history database</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}
+

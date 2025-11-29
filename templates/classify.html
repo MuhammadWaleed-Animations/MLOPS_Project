@@ -1,0 +1,426 @@
+{% extends "base.html" %}
+
+{% block title %}Classify Image - Building Classifier{% endblock %}
+
+{% block extra_css %}
+<style>
+    .upload-area {
+        border: 3px dashed #667eea;
+        border-radius: 15px;
+        padding: 60px 40px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: #f8f9ff;
+        margin-bottom: 2rem;
+    }
+
+    .upload-area:hover {
+        border-color: #764ba2;
+        background: #f0f2ff;
+    }
+
+    .upload-area.dragover {
+        border-color: #764ba2;
+        background: #e8ebff;
+        transform: scale(1.02);
+    }
+
+    .upload-icon {
+        font-size: 4em;
+        color: #667eea;
+        margin-bottom: 20px;
+    }
+
+    .upload-text {
+        color: #666;
+        font-size: 1.2em;
+        margin-bottom: 10px;
+    }
+
+    .upload-subtext {
+        color: #999;
+        font-size: 0.9em;
+    }
+
+    #fileInput {
+        display: none;
+    }
+
+    .preview-container {
+        display: none;
+        margin-top: 2rem;
+    }
+
+    .preview-image {
+        width: 100%;
+        max-width: 500px;
+        border-radius: 15px;
+        margin: 0 auto 20px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        display: block;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 15px;
+        border: none;
+        border-radius: 10px;
+        font-size: 1.1em;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-bottom: 10px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-primary:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+    }
+
+    .btn-secondary {
+        background: white;
+        color: #667eea;
+        border: 2px solid #667eea;
+    }
+
+    .btn-secondary:hover {
+        background: #667eea;
+        color: white;
+    }
+
+    .results-container {
+        display: none;
+        margin-top: 2rem;
+    }
+
+    .results-title {
+        font-size: 1.5em;
+        color: #333;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+    .prediction-item {
+        background: #f8f9ff;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.3s ease;
+    }
+
+    .prediction-item:hover {
+        transform: translateX(5px);
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .prediction-rank {
+        background: #667eea;
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        font-size: 1.2em;
+        margin-right: 20px;
+    }
+
+    .prediction-details {
+        flex-grow: 1;
+    }
+
+    .prediction-class {
+        font-weight: bold;
+        color: #333;
+        font-size: 1.2em;
+        margin-bottom: 8px;
+    }
+
+    .confidence-bar {
+        width: 100%;
+        height: 10px;
+        background: #e0e0e0;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .confidence-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        border-radius: 10px;
+        transition: width 0.5s ease;
+    }
+
+    .prediction-confidence {
+        background: #764ba2;
+        color: white;
+        padding: 8px 20px;
+        border-radius: 20px;
+        font-weight: bold;
+        font-size: 1.1em;
+    }
+
+    .loading {
+        display: none;
+        text-align: center;
+        margin: 2rem 0;
+    }
+
+    .spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #667eea;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .error-message {
+        background: #ff4444;
+        color: white;
+        padding: 15px;
+        border-radius: 10px;
+        margin-top: 1rem;
+        display: none;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .upload-area {
+            padding: 40px 20px;
+        }
+
+        .upload-icon {
+            font-size: 3em;
+        }
+
+        .upload-text {
+            font-size: 1em;
+        }
+
+        .preview-image {
+            max-width: 100%;
+        }
+
+        .btn {
+            font-size: 1em;
+            padding: 12px;
+        }
+
+        .prediction-item {
+            flex-direction: column;
+            text-align: center;
+            gap: 10px;
+        }
+
+        .prediction-rank {
+            margin-right: 0;
+            margin-bottom: 10px;
+        }
+
+        .prediction-confidence {
+            font-size: 1em;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .container h1 {
+            font-size: 1.5rem;
+        }
+
+        .upload-area {
+            padding: 30px 15px;
+        }
+
+        .results-title {
+            font-size: 1.2em;
+        }
+
+        .prediction-class {
+            font-size: 1em;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="text-center">Classify Building Image</h1>
+    <p class="text-center" style="color: #666; margin-bottom: 2rem;">Upload an image to identify the building type</p>
+
+    <div class="upload-area" id="uploadArea">
+        <div class="upload-icon">[IMAGE]</div>
+        <div class="upload-text">Click or drag image here</div>
+        <div class="upload-subtext">Supports: JPG, PNG, GIF, BMP, WebP (Max 16MB)</div>
+        <input type="file" id="fileInput" accept="image/*">
+    </div>
+
+    <div class="preview-container" id="previewContainer">
+        <img id="previewImage" class="preview-image" src="" alt="Preview">
+        <button class="btn btn-primary" id="predictBtn">Predict Building Type</button>
+        <button class="btn btn-secondary" id="resetBtn">Upload Another Image</button>
+    </div>
+
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p style="color: #666;">Analyzing image...</p>
+    </div>
+
+    <div class="results-container" id="resultsContainer">
+        <h2 class="results-title">Prediction Results</h2>
+        <div id="predictionsList"></div>
+    </div>
+
+    <div class="error-message" id="errorMessage"></div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('fileInput');
+    const previewContainer = document.getElementById('previewContainer');
+    const previewImage = document.getElementById('previewImage');
+    const predictBtn = document.getElementById('predictBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const loading = document.getElementById('loading');
+    const resultsContainer = document.getElementById('resultsContainer');
+    const predictionsList = document.getElementById('predictionsList');
+    const errorMessage = document.getElementById('errorMessage');
+
+    let selectedFile = null;
+
+    uploadArea.addEventListener('click', () => fileInput.click());
+
+    fileInput.addEventListener('change', (e) => {
+        handleFile(e.target.files[0]);
+    });
+
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('dragover');
+    });
+
+    uploadArea.addEventListener('dragleave', () => {
+        uploadArea.classList.remove('dragover');
+    });
+
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+        handleFile(e.dataTransfer.files[0]);
+    });
+
+    function handleFile(file) {
+        if (!file || !file.type.startsWith('image/')) {
+            showError('Please select a valid image file');
+            return;
+        }
+
+        selectedFile = file;
+        const reader = new FileReader();
+        
+        reader.onload = (e) => {
+            previewImage.src = e.target.result;
+            uploadArea.style.display = 'none';
+            previewContainer.style.display = 'block';
+            resultsContainer.style.display = 'none';
+            errorMessage.style.display = 'none';
+        };
+
+        reader.readAsDataURL(file);
+    }
+
+    predictBtn.addEventListener('click', async () => {
+        if (!selectedFile) return;
+
+        predictBtn.disabled = true;
+        loading.style.display = 'block';
+        resultsContainer.style.display = 'none';
+        errorMessage.style.display = 'none';
+
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+
+        try {
+            const response = await fetch('/predict', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                displayResults(data.predictions);
+            } else {
+                showError(data.error || 'Prediction failed');
+            }
+        } catch (error) {
+            showError('Failed to connect to server: ' + error.message);
+        } finally {
+            loading.style.display = 'none';
+            predictBtn.disabled = false;
+        }
+    });
+
+    resetBtn.addEventListener('click', () => {
+        selectedFile = null;
+        fileInput.value = '';
+        uploadArea.style.display = 'block';
+        previewContainer.style.display = 'none';
+        resultsContainer.style.display = 'none';
+        errorMessage.style.display = 'none';
+    });
+
+    function displayResults(predictions) {
+        predictionsList.innerHTML = '';
+        
+        predictions.forEach((pred, index) => {
+            const confidence = (pred.confidence * 100).toFixed(2);
+            const item = document.createElement('div');
+            item.className = 'prediction-item';
+            item.innerHTML = `
+                <div class="prediction-rank">${index + 1}</div>
+                <div class="prediction-details">
+                    <div class="prediction-class">${pred.class}</div>
+                    <div class="confidence-bar">
+                        <div class="confidence-fill" style="width: ${confidence}%"></div>
+                    </div>
+                </div>
+                <div class="prediction-confidence">${confidence}%</div>
+            `;
+            predictionsList.appendChild(item);
+        });
+
+        resultsContainer.style.display = 'block';
+    }
+
+    function showError(message) {
+        errorMessage.textContent = 'ERROR: ' + message;
+        errorMessage.style.display = 'block';
+    }
+</script>
+{% endblock %}
+

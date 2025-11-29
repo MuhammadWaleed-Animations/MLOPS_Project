@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block title %}Prediction History - Building Classifier{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 15px;
+        text-align: center;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-value {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        opacity: 0.9;
+    }
+
+    .history-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 2rem;
+    }
+
+    .history-table th {
+        background: #667eea;
+        color: white;
+        padding: 1rem;
+        text-align: left;
+        font-weight: 600;
+    }
+
+    .history-table td {
+        padding: 1rem;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .history-table tr:hover {
+        background: #f8f9ff;
+    }
+
+    .class-badge {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        background: #667eea;
+        color: white;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+    .confidence-cell {
+        font-weight: bold;
+        color: #764ba2;
+    }
+
+    .no-data {
+        text-align: center;
+        padding: 3rem;
+        color: #999;
+        font-size: 1.1rem;
+    }
+
+    .class-distribution {
+        margin-top: 3rem;
+    }
+
+    .class-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        background: #f8f9ff;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+    }
+
+    .class-name {
+        font-weight: 600;
+        color: #333;
+    }
+
+    .class-count {
+        background: #667eea;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: bold;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 968px) {
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .history-table {
+            font-size: 0.9rem;
+        }
+
+        .history-table th,
+        .history-table td {
+            padding: 0.7rem 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+        }
+
+        .class-item {
+            flex-direction: column;
+            gap: 0.5rem;
+            align-items: flex-start;
+        }
+    }
+
+    @media (max-width: 580px) {
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .history-table {
+            display: block;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .history-table th,
+        .history-table td {
+            font-size: 0.85rem;
+            padding: 0.5rem 0.3rem;
+        }
+
+        .class-badge {
+            font-size: 0.8rem;
+            padding: 0.3rem 0.8rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Prediction History</h1>
+    
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-value">{{ stats.total }}</div>
+            <div class="stat-label">Total Predictions</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ (stats.avg_confidence * 100)|round(1) }}%</div>
+            <div class="stat-label">Average Confidence</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ stats.class_distribution|length }}</div>
+            <div class="stat-label">Classes Identified</div>
+        </div>
+    </div>
+
+    {% if stats.class_distribution %}
+    <div class="class-distribution">
+        <h2>Class Distribution</h2>
+        {% for class_name, count in stats.class_distribution %}
+        <div class="class-item">
+            <span class="class-name">{{ class_name }}</span>
+            <span class="class-count">{{ count }} predictions</span>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <h2 class="mt-2">Recent Predictions</h2>
+    
+    {% if predictions %}
+    <table class="history-table">
+        <thead>
+            <tr>
+                <th>Filename</th>
+                <th>Predicted Class</th>
+                <th>Confidence</th>
+                <th>Timestamp</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pred in predictions %}
+            <tr>
+                <td>{{ pred[0] }}</td>
+                <td><span class="class-badge">{{ pred[1] }}</span></td>
+                <td class="confidence-cell">{{ (pred[2] * 100)|round(2) }}%</td>
+                <td>{{ pred[3] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="no-data">
+        <p>No predictions yet. Start by <a href="/classify">classifying an image</a>!</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+

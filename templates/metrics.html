@@ -1,0 +1,232 @@
+{% extends "base.html" %}
+
+{% block title %}MLflow Metrics - Building Classifier{% endblock %}
+
+{% block extra_css %}
+<style>
+    .metrics-intro {
+        background: #f8f9ff;
+        padding: 2rem;
+        border-radius: 15px;
+        margin-bottom: 2rem;
+        border-left: 4px solid #667eea;
+    }
+
+    .run-card {
+        background: white;
+        border: 2px solid #e0e0e0;
+        border-radius: 15px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        transition: all 0.3s;
+    }
+
+    .run-card:hover {
+        border-color: #667eea;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .run-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #f0f0f0;
+    }
+
+    .run-id {
+        font-family: 'Courier New', monospace;
+        background: #f0f0f0;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        font-size: 0.9rem;
+    }
+
+    .run-time {
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .metric-item {
+        background: #f8f9ff;
+        padding: 1.5rem;
+        border-radius: 10px;
+        text-align: center;
+    }
+
+    .metric-label {
+        color: #666;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .metric-value {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #667eea;
+    }
+
+    .params-section {
+        margin-top: 1.5rem;
+    }
+
+    .params-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+    }
+
+    .param-item {
+        background: #f0f0f0;
+        padding: 1rem;
+        border-radius: 8px;
+    }
+
+    .param-key {
+        font-size: 0.85rem;
+        color: #666;
+        margin-bottom: 0.3rem;
+    }
+
+    .param-value {
+        font-weight: 600;
+        color: #333;
+    }
+
+    .no-runs {
+        text-align: center;
+        padding: 3rem;
+        color: #999;
+    }
+
+    .mlflow-link {
+        display: inline-block;
+        margin-top: 1rem;
+        padding: 0.8rem 2rem;
+        background: #667eea;
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+    .mlflow-link:hover {
+        background: #764ba2;
+        transform: translateY(-2px);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 968px) {
+        .metrics-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .params-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .run-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .run-id {
+            font-size: 0.8rem;
+            padding: 0.4rem 0.8rem;
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+        }
+
+        .metrics-intro {
+            padding: 1.5rem;
+        }
+    }
+
+    @media (max-width: 580px) {
+        .metrics-grid,
+        .params-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .run-card {
+            padding: 1.5rem;
+        }
+
+        .metric-item {
+            padding: 1rem;
+        }
+
+        .mlflow-link {
+            padding: 0.6rem 1.5rem;
+            font-size: 0.9rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>MLflow Experiment Metrics</h1>
+    
+    <div class="metrics-intro">
+        <p><strong>Experiment:</strong> fast_building_classifier</p>
+        <p style="margin-top: 0.5rem; color: #666;">Track model training runs, metrics, and parameters</p>
+        <a href="http://localhost:5000" target="_blank" class="mlflow-link">Open MLflow UI</a>
+    </div>
+
+    {% if runs %}
+        {% for run in runs %}
+        <div class="run-card">
+            <div class="run-header">
+                <div class="run-id">Run ID: {{ run.run_id[:8] }}...</div>
+                <div class="run-time">{{ run.start_time }}</div>
+            </div>
+
+            <h3>Metrics</h3>
+            <div class="metrics-grid">
+                {% for key, value in run.metrics.items() %}
+                <div class="metric-item">
+                    <div class="metric-label">{{ key }}</div>
+                    <div class="metric-value">{{ value|round(4) }}</div>
+                </div>
+                {% endfor %}
+            </div>
+
+            {% if run.params %}
+            <div class="params-section">
+                <h3>Parameters</h3>
+                <div class="params-grid">
+                    {% for key, value in run.params.items() %}
+                    <div class="param-item">
+                        <div class="param-key">{{ key }}</div>
+                        <div class="param-value">{{ value }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    {% else %}
+    <div class="no-runs">
+        <p>No training runs found. Start by training a model!</p>
+        <p style="margin-top: 1rem; font-size: 0.9rem;">Run: <code>python train.py</code></p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
