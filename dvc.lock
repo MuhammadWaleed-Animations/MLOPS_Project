@@ -1,0 +1,25 @@
+schema: '2.0'
+stages:
+  train:
+    cmd: python train.py
+    deps:
+    - path: data
+      hash: md5
+      md5: 159050f044985f6c242115a7a710c603.dir
+      size: 3953830390
+      nfiles: 1393
+    - path: train.py
+      hash: md5
+      md5: 027a90922c80c042dd754c20e1ddf459
+      size: 4231
+    params:
+      params.yaml:
+        train.batch_size: 16
+        train.epochs: 15
+        train.learning_rate: 0.001
+    outs:
+    - path: artifacts/
+      hash: md5
+      md5: a5c96437c7a6857da32fd48fcd9960b5.dir
+      size: 44791262
+      nfiles: 2
