@@ -10,7 +10,4 @@ stages:
       - train.batch_size
     outs:
       - artifacts/
-    # metrics:
-    #   - mlflow.db:
-    #       cache: false
 
